@@ -13,26 +13,29 @@
 
     <main class="main">
         <div class="calculator">
-            <div class="screen"></div>
+            <div class="screen", id="screen">
+                <div id="currentOperation"></div>
+                <div id="result"></div>
+            </div>
             <div class="buttons">
                 <button type="button", id="clearButton">CLEAR</button>
                 <button type="button", id="deleteButton">DELETE</button>
-                <button type="button">7</button>
-                <button type="button">8</button>
-                <button type="button">9</button>
-                <button type="button">÷</button>
-                <button type="button">4</button>
-                <button type="button">5</button>
-                <button type="button">6</button>
-                <button type="button">x</button>
-                <button type="button">1</button>
-                <button type="button">2</button>
-                <button type="button">3</button>
-                <button type="button">-</button>
-                <button type="button">.</button>
-                <button type="button">0</button>
-                <button type="button">=</button>
-                <button type="button">+</button>
+                <button type="button", class="digitButtons">7</button>
+                <button type="button", class="digitButtons">8</button>
+                <button type="button", class="digitButtons">9</button>
+                <button type="button", class="operatorButtons">÷</button>
+                <button type="button", class="digitButtons">4</button>
+                <button type="button", class="digitButtons">5</button>
+                <button type="button", class="digitButtons">6</button>
+                <button type="button", class="operatorButtons">x</button>
+                <button type="button", class="digitButtons">1</button>
+                <button type="button", class="digitButtons">2</button>
+                <button type="button", class="digitButtons">3</button>
+                <button type="button", class="operatorButtons">-</button>
+                <button type="button", id="floatButton">.</button>
+                <button type="button", class="digitButtons">0</button>
+                <button type="button", id="equalButton">=</button>
+                <button type="button", class="operatorButtons">+</button>
             </div>
         </div>
         <footer>Created by slecler96 2023 <a href=https://github.com/slecler96>

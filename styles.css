@@ -35,9 +35,17 @@ main {
     width: 350px;
     margin: 0 auto;
     margin-bottom: 20px;
-    text-align: right;
 }
 
+.screen#currentOperation {
+    padding: 5px;
+    text-align: left;
+}
+
+.screen#result {
+    padding: 5px;
+    text-align: right;
+}
 
 
 footer {
