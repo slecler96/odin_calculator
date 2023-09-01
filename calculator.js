@@ -7,30 +7,95 @@ const clearButton = document.getElementById("clearButton");
 const screenCurrent = document.getElementById("currentOperation");
 const screenResult = document.getElementById("result");
 
+const POINT = ".";
+const PLUS = "+";
+const MINUS = "-";
+const MULTIPLY = "*";
+const DIVIDE = "/";
+const EMPTY = "";
 
-let currentFirstNumber = "";
-let currentSecondNumber = "";
-let currentOperator = "";
-let currentResult = "";
+let currentFirstNumber = EMPTY;
+let currentSecondNumber = EMPTY;
+let currentOperator = EMPTY;
+let currentResult = EMPTY;
+
+/*
+Deal with keyboard inputs
+*/
+window.addEventListener('keydown', dealWithKeyboardInput)
+
+function dealWithKeyboardInput(e) {
+    if (0 <= parseInt(e.key) && parseInt(e.key) <= 9) {
+        appendDigit(e.key);
+    }
+    else if ([PLUS,MINUS,MULTIPLY,DIVIDE].includes(e.key)) {
+        appendOperator(convertOperator(e.key));
+    }
+    else if (e.key === "Backspace") {
+        backspace() 
+    }
+    else if (e.key === "Escape") {
+        clear()
+    }
+    else if (["=", "Enter"].includes(e.key)) {
+        performOperation()
+    }
+    else if (e.key === POINT) {
+        appendPoint()
+    }
+}
+
+function convertOperator(operator) {
+    if (operator === DIVIDE) {
+        return "÷";
+    }
+    else if (operator === MULTIPLY) {
+        return "x"
+    }
+    else {
+        return operator
+    }
+}
 
 /*
 Activate digit buttons
 */
-digitButtons.forEach(button => {button.addEventListener('click', selectDigit)});
-operatorButtons.forEach(button => {button.addEventListener('click', selectOperator)});
+digitButtons.forEach(button => {button.addEventListener('click', () => appendDigit(button.textContent))});
+operatorButtons.forEach(button => {button.addEventListener('click', () => appendOperator(button.textContent))});
 
-console.log(currentFirstNumber)
 
 /*
-Clear the screen*/
+Clear the screen
+*/
 clearButton.addEventListener('click', clear);
 
-
 function clear() {
-    screenCurrent.textContent = "";
-    screenResult.textContent = "";
-    currentFirstNumber = currentSecondNumber = currentOperator = currentResult = ""
+    screenCurrent.textContent = EMPTY;
+    screenResult.textContent = EMPTY;
+    currentFirstNumber = currentSecondNumber = currentOperator = currentResult = EMPTY
 }
+
+/*
+Float button to write float numbers
+*/
+floatButton.addEventListener('click', appendPoint);
+
+function appendPoint() {
+    if (currentOperator === EMPTY) {
+        if (!currentFirstNumber.includes(POINT)) {
+            currentFirstNumber += POINT;
+            screenCurrent.textContent = currentFirstNumber;
+        }
+    }
+    else {
+        if (!currentSecondNumber.includes(POINT)) {
+            currentSecondNumber += POINT;
+            screenCurrent.textContent += POINT;
+        }
+    }
+}
+
+
 
 /*
 Delete the last displayed character on screen
@@ -39,9 +104,9 @@ deleteButton.addEventListener('click', backspace);
 
 function backspace() {
     
-    if (currentSecondNumber === "") {
-        if (currentOperator === "") {
-            if (currentFirstNumber === "") {
+    if (currentSecondNumber === EMPTY) {
+        if (currentOperator === EMPTY) {
+            if (currentFirstNumber === EMPTY) {
                 clear()
             }
             else {
@@ -50,7 +115,7 @@ function backspace() {
             }            
         }
         else {
-            currentOperator = "";
+            currentOperator = EMPTY;
             screenCurrent.textContent = screenCurrent.textContent.slice(0, -1); 
         }
     }
@@ -61,12 +126,11 @@ function backspace() {
 }
 
 
-equalButton.addEventListener('click', selectEqual);
+equalButton.addEventListener('click', performOperation);
 
-function selectEqual(e) {
-    console.log("equal "+currentFirstNumber+" "+currentSecondNumber+" "+currentOperator)
+function performOperation() {
     let result;
-    if (currentSecondNumber === "") {
+    if (currentSecondNumber === EMPTY) {
         screenResult.textContent = currentFirstNumber;
         result = currentFirstNumber
     }
@@ -74,66 +138,67 @@ function selectEqual(e) {
         result = operate(currentOperator, currentFirstNumber, currentSecondNumber);
         // division by 0
         if (result === null) {
-            screenCurrent.textContent = "";
+            screenCurrent.textContent = EMPTY;
             screenResult.textContent = "Error : division by 0";
-            currentFirstNumber = currentSecondNumber = currentOperator = "";
+            currentFirstNumber = currentSecondNumber = currentOperator = EMPTY;
         }
         else { 
             screenResult.textContent = result;
             currentResult = result;
-            currentFirstNumber = currentSecondNumber = currentOperator = "";
+            currentFirstNumber = currentSecondNumber = currentOperator = EMPTY;
         }
     }
 
 }
 
-function selectDigit(e) {
-    screenResult.textContent = "";
-    if (currentOperator === "") {
-        currentFirstNumber += e.target.textContent;
+function appendDigit(digit) {
+    screenResult.textContent = EMPTY;
+    if (currentOperator === EMPTY) {
+        currentFirstNumber += digit;
+        currentResult = EMPTY
         screenCurrent.textContent = currentFirstNumber;
     }
     else {
-        currentSecondNumber += e.target.textContent;
-        screenCurrent.textContent += currentSecondNumber;
+        currentSecondNumber += digit;
+        screenCurrent.textContent += digit;
     }   
 }
 
-function selectOperator(e) {
-    screenResult.textContent = "";
-    screenCurrent.textContent += e.target.textContent;
-    if (currentResult === "") {
-        if (currentSecondNumber === "") {
-            currentOperator = e.target.textContent;
+function appendOperator(operator) {
+    screenResult.textContent = EMPTY;
+    
+    if (currentResult === EMPTY) {
+        if (currentSecondNumber === EMPTY) {
+            screenCurrent.textContent += operator;
+            currentOperator = operator;
         }
         else {
             let result = operate(currentOperator, currentFirstNumber, currentSecondNumber);
             // division by 0
             if (result === null) {
-                screenCurrent.textContent = "";
+                screenCurrent.textContent = EMPTY;
                 screenResult.textContent = "Error : division by 0";
-                currentFirstNumber = currentSecondNumber = currentOperator = "";
+                currentFirstNumber = currentSecondNumber = currentOperator = EMPTY;
             }
             else { 
                 currentFirstNumber = result;
-                currentSecondNumber = "";
-                currentOperator = e.target.textContent;
+                currentSecondNumber = EMPTY;
+                currentOperator = operator;
                 screenCurrent.textContent = currentFirstNumber+currentOperator;
             }
         }
     }
     else {
+        screenCurrent.textContent = operator;
         currentFirstNumber = currentResult;
-        currentResult = "";
-        currentOperator = e.target.textContent;
+        currentResult = EMPTY;
+        currentOperator = operator;
     }
 
 }
 
 function add(firstNumb, secondNumb) {
-    console.log("ADD ")
     let result = +firstNumb + +secondNumb;
-    console.log(result)
     return +firstNumb + +secondNumb;
 }
 
