@@ -73,9 +73,10 @@ function selectEqual(e) {
     else {
         result = operate(currentOperator, currentFirstNumber, currentSecondNumber);
         screenResult.textContent = result;
+        currentResult = result;
+        currentFirstNumber = currentSecondNumber = currentOperator = "";
     }
-    currentResult = result;
-    currentFirstNumber = currentSecondNumber = currentOperator = "";
+
 }
 
 function selectDigit(e) {
