@@ -72,14 +72,23 @@ function selectEqual(e) {
     }
     else {
         result = operate(currentOperator, currentFirstNumber, currentSecondNumber);
-        screenResult.textContent = result;
-        currentResult = result;
-        currentFirstNumber = currentSecondNumber = currentOperator = "";
+        // division by 0
+        if (result === null) {
+            screenCurrent.textContent = "";
+            screenResult.textContent = "Error : division by 0";
+            currentFirstNumber = currentSecondNumber = currentOperator = "";
+        }
+        else { 
+            screenResult.textContent = result;
+            currentResult = result;
+            currentFirstNumber = currentSecondNumber = currentOperator = "";
+        }
     }
 
 }
 
 function selectDigit(e) {
+    screenResult.textContent = "";
     if (currentOperator === "") {
         currentFirstNumber += e.target.textContent;
         screenCurrent.textContent = currentFirstNumber;
@@ -91,6 +100,7 @@ function selectDigit(e) {
 }
 
 function selectOperator(e) {
+    screenResult.textContent = "";
     screenCurrent.textContent += e.target.textContent;
     if (currentResult === "") {
         if (currentSecondNumber === "") {
@@ -98,10 +108,18 @@ function selectOperator(e) {
         }
         else {
             let result = operate(currentOperator, currentFirstNumber, currentSecondNumber);
-            currentFirstNumber = result;
-            currentSecondNumber = "";
-            currentOperator = e.target.textContent;
-            screenCurrent.textContent = currentFirstNumber+currentOperator;
+            // division by 0
+            if (result === null) {
+                screenCurrent.textContent = "";
+                screenResult.textContent = "Error : division by 0";
+                currentFirstNumber = currentSecondNumber = currentOperator = "";
+            }
+            else { 
+                currentFirstNumber = result;
+                currentSecondNumber = "";
+                currentOperator = e.target.textContent;
+                screenCurrent.textContent = currentFirstNumber+currentOperator;
+            }
         }
     }
     else {
@@ -135,16 +153,17 @@ function operate(operator, firstNumb, secondNumb) {
     switch (operator) {
         case '+':
             return add(firstNumb,secondNumb);
-            break;
         case '-':
             return subtract(firstNumb,secondNumb);
-            break;
         case 'x':
             return multiply(firstNumb, secondNumb);
-            break;
         case '÷':
-            return divide(firstNumb, secondNumb);
-            break;
+            if (secondNumb === "0") {
+                return null
+            }
+            else {
+                return divide(firstNumb, secondNumb);
+            }
         default:
             return None
     }
