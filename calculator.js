@@ -1,10 +1,15 @@
-const digitButtons = document.querySelectorAll('.digitButtons');  
+// On peut faire des choses illégales et ça marche ! Genre écrire 7xxxxxxx9 et ça renvoie 63. Est-ce vraiment ce qu'on veut ?
+
+// C'est cool de tout déclarer ici, ça rend le code plus clair !
+const digitButtons = document.querySelectorAll('.digitButtons');
 const operatorButtons = document.querySelectorAll('.operatorButtons');  
 const equalButton = document.getElementById("equalButton");
 const floatButton = document.getElementById("floatButton");
 const deleteButton = document.getElementById("deleteButton");
 const clearButton = document.getElementById("clearButton");
+// Tu pourrais faire un .textContent ici pour évitter de le faire partout
 const screenCurrent = document.getElementById("currentOperation");
+// Pareil
 const screenResult = document.getElementById("result");
 
 const POINT = ".";
@@ -53,6 +58,7 @@ Clear the screen
 function clear() {
     screenCurrent.textContent = EMPTY;
     screenResult.textContent = EMPTY;
+    // Je trouve ça vraiment pas clair comme manière d'écrire, même si ça économise des lignes
     currentFirstNumber = currentSecondNumber = currentOperator = currentResult = EMPTY
 }
 
@@ -61,6 +67,15 @@ function clear() {
 Append a point to the current number to deal with floating point numbers
 */
 function appendPoint() {
+    /*
+    Faire des if imbriqués comme cela ça rend le code difficile à lire ! Il vaut mieux se servir de l'opérateur booléen && (ET)
+
+    Tu peux alors écrire :
+    if (currentOperator === EMPTY && !currentFirstNumber.includes(POINT)) {}
+    else if (currentOperator !== EMPTY && !currentSecondNumber.includes(POINT)) {}
+
+    Mais d'ailleurs, c'est normal que tout les cas soient pas gérés ? Hésite pas à laisser des commentaires !
+     */
     if (currentOperator === EMPTY) {
         if (!currentFirstNumber.includes(POINT)) {
             currentFirstNumber += POINT;
@@ -81,7 +96,15 @@ When the user presses the "delete" button or the backspace key, delete the last 
 and update the corresponding number or operator variable
 */
 function backspace() {
-    
+
+    /*
+    Pareil, c'est dur à lire avec des if imbriqué alors que tu peux écrire:
+
+    if (currentSecondNumber === EMPTY && currentOperator === EMPTY && currentFirstNumber === EMPTY) {}
+    else if (currentSecondNumber === EMPTY && currentOperator === EMPTY) {}
+    else if (currentSecondNumber === EMPTY) {}
+    else {}
+     */
     if (currentSecondNumber === EMPTY) {
         if (currentOperator === EMPTY) {
             if (currentFirstNumber === EMPTY) {
@@ -110,6 +133,7 @@ When the user presses = : performs the given operation and displays the result o
 */
 function performOperation() {
     let result;
+    // C'est bof ça ! Il se passe quoi si on écrit 5 / par exemple ?
     if (currentSecondNumber === EMPTY) {
         screenResult.textContent = currentFirstNumber;
         result = currentFirstNumber
@@ -208,6 +232,7 @@ Returns null when trying to divide by 0
 */
 function operate(operator, firstNumb, secondNumb) {
     switch (operator) {
+        // Utilise bien tes constantes partout
         case '+':
             return add(firstNumb,secondNumb);
         case '-':
@@ -233,6 +258,7 @@ function dealWithKeyboardInput(e) {
     else if ([PLUS,MINUS,MULTIPLY,DIVIDE].includes(e.key)) {
         appendOperator(convertOperator(e.key));
     }
+    // Noooon des string magiques
     else if (e.key === "Backspace") {
         backspace() 
     }
@@ -247,6 +273,7 @@ function dealWithKeyboardInput(e) {
     }
 }
 
+// Pourquoi + et - ne sont pas là ?
 function convertOperator(operator) {
     if (operator === DIVIDE) {
         return "÷";
@@ -258,3 +285,11 @@ function convertOperator(operator) {
         return operator
     }
 }
+
+// C'est marrant que Odin fasse écrire le projet comme cela car le plus simple serait encore de te laisser tout taper et à la fin quand tu cliques sur Entrée ça te fait le compute !
+// Ce serait probablement beaucoup plus simple à écrire et à tester !
+// Si tu l'écris comme ça l'avantage c'est que tu peux donner du feedback en live à ton utilisateur, par exemple s'il essaie de taper 7xx9, tu peux l'arrêter dès qu'il tape le deuxième x
+
+
+// Après on pourrait imaginer ce que donne le projet si on combine les opérations / on rajoute des parenthèses...
+
