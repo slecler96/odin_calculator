@@ -293,3 +293,53 @@ function convertOperator(operator) {
 
 // Après on pourrait imaginer ce que donne le projet si on combine les opérations / on rajoute des parenthèses...
 
+// Là dans ton code tu as tendance à mélanger la partie affichage et la partie logique.
+// C'est quelque chose qu'on souhaite en général éviter pour plusieurs raisons :
+// - c'est facile de tester la partie logique, la partie affichage c'est l'enfer (et les setup sont pas du tout les mêmes)
+// - c'est bien de séparer les responsabilités dans le code, cela le rend plus maintenable, surtout que potentiellement c'est pas les mêmes personnes qui dév l'affichage et la logique métier
+
+// Par exemple ici tu pourrais faire une architecture un peu plus "OOP" avec un objet qui représente la logique métier de ton calculateur :
+
+class Calculator {
+    currentFormula = ""
+    formulaResult = ""
+    lastInputError = ""
+
+    constructor() {}
+
+    addUserInput(input) {}
+
+    backspace() {}
+
+    clear() {}
+
+    performOperation() {}
+}
+
+// Ensuite, à chaque input utilisateur, tu appelles la fonction de cette objet qui va bien, puis ensuite tu récupères currentFormula, formulaResult et lastInputError pour les afficher
+
+function dealWithKeyboardInputBis(e) {
+    if (0 <= parseInt(e.key) && parseInt(e.key) <= 9) {
+        calculator.addUserInput()
+    }
+    else if ([PLUS,MINUS,MULTIPLY,DIVIDE].includes(e.key)) {
+        calculator.addUserInput()
+    }
+    // Noooon des string magiques
+    else if (e.key === "Backspace") {
+        calculator.backspace()
+    }
+    else if (e.key === "Escape") {
+        calculator.clear()
+    }
+    else if (["=", "Enter"].includes(e.key)) {
+        calculator.performOperation()
+    }
+    else if (e.key === POINT) {
+        calculator.appendPoint()
+    }
+
+    screenCurrent = calculator.currentFormula
+    screenResult = calculator.formulaResult
+    screenError = calculator.lastInputError
+}
